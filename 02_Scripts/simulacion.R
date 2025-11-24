@@ -1,6 +1,6 @@
           # Simulación con DeSolve #
 library(deSolve)
-
+library(rootSolve)
 
 Ebola <- function(time, state, parameters) {
   with(as.list(c(state, parameters)), {
@@ -34,7 +34,7 @@ Ebola <- function(time, state, parameters) {
 
 pars <- c(s = 0.8 , e = 0.08, l= 0.1, o= 1,
           b11=0.3 , b12= 0.8, b13= 0.5, b14= 0.5, b1d = 0.05, b1m = 0.03, u = 0.02, n= 0.5,
-          b21= 0.3, b22= 0.8, b23= 0.5, b24= 0.5, b2d = 0.05, b1m = 0.03, y = 0.02, n= 0.5,
+          b21= 0.3, b22= 0.8, b23= 0.5, b24= 0.5, b2d = 0.05,  y = 0.02, 
           k1 = 0.1, a1 = 0.1, s1 = 0.1,
           k2 = 0.1, a2 = 0.1, s2 = 0.1,
           k3 = 0.1, a3 = 0.1, s3 = 0.1,
@@ -49,7 +49,7 @@ tiempo <- seq(0,10, by= 0.05)
 out <- ode(condiciones_iniciales, tiempo, Ebola, pars)
 
 matplot(out[, 1], out[, 2:11], type = "l", xlab = "tiempo", ylab = "población",
-        main = "SEIDR", lwd = 2)
+        main = "SEIR Ébola", lwd = 2)
 legend("topright", legend = c("Suceptibles m", "Reservorio m", "Suceptibles 1", "Suceptibles 2", "Expuestos",
                               "Infectados 1", "Infectados 2", "Infectados 3", "Infectados 4", "Recuperados", "Defunciones"),
        col = 1:5, lty = 1, cex = 0.8)
@@ -105,4 +105,58 @@ condiciones.ref <- c(Sm=500 , Lm=300   , S1=500, S2= 100 ,
 tiempo.red <- seq(0,10, by= 0.05)
 
 # out.ref <- ode(condiciones.ref, tiempo.red, Ebola, parametros.ref)
+
+
+
+
+# =============== Puntos de equilibrio & estabilidades =============== #ç
+
+
+steady()
+jacobian.full()
+eigen()
+ode()
+
+
+
+# --------------- TU MODELO ----------------
+Ebola
+# --------------- PARÁMETROS ---------------
+pars
+# --------------- ESTADO INICIAL -----------
+condiciones_iniciales
+
+# --------------- 1) PUNTO DE EQUILIBRIO ---------------
+
+eq <- runsteady(
+  y = condiciones_iniciales,
+  time = c(0, 1),
+  func = Ebola,
+  parms = pars
+)
+
+eq$y   # <-- Los 11 valores del equilibrio
+
+# --------------- 2) JACOBIANO EN EL EQUILIBRIO ---------------
+J <- jacobian.full(
+  y = eq$y,
+  func = Ebola,
+  parms = pars
+)
+
+J
+
+# --------------- 3) ESTABILIDAD ---------
+autovalores <- eigen(J)$values
+autovalores
+
+
+
+
+
+
+
+
+
+
   
