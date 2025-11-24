@@ -61,8 +61,8 @@ legend("topright", legend = c("Suceptibles m", "Reservorio m", "Suceptibles 1", 
 y <- 1/12.7
 
 # Tasa de transmision:
-# promedio de lo reportado para los 3 paises afectados para nuestra tasa
-beta.base <- (0.27+0.45+0.28)/3
+  # promedio de lo reportado para los 3 paises afectados para nuestra tasa
+  beta.base <- (0.27+0.45+0.28)/3
 
 # como esta es de doctores estos se lavan las manos y tocan el cadaver
 b2d <- beta.base * 2.25 * 2.1
@@ -96,7 +96,22 @@ s2 <- 1/ 10.5
 s3 <- 1/ 13.2
 s4 <- 1/15.6
 
-parametros.ref <- c(y,b2d, b1d, k1, k2, k3, a1 ,a2 ,a3, a4,s1,s2,s3 )
+# murcielago
+# Estos si son arbitrarios:
+  # Tasa natalidad murcielagos
+s <- 0.2
+  # Conversión a reservorio
+l <- 0.4
+  # Mortalidad murcielagos
+m <- 0.2
+  # Tasa de caza de murcielagos:
+o <- 0.3
+
+# Tasa de natalidad humanos:
+n <- 
+
+parametros.ref <- c(y,b2d, b1d, k1, k2, k3, a1 ,a2 ,a3, a4, s1, s2, s3,
+                    s, l, m, o, n)
 
 condiciones.ref <- c(Sm=500 , Lm=300   , S1=500, S2= 100 ,
                            E=5    , I1= 1    , I2= 0 , I3= 0   , I4= 0,
