@@ -97,7 +97,12 @@ s3 <- 1/ 13.2
 s4 <- 1/15.6
 
 parametros.ref <- c(y,b2d, b1d, k1, k2, k3, a1 ,a2 ,a3, a4,s1,s2,s3 )
+
+condiciones.ref <- c(Sm=500 , Lm=300   , S1=500, S2= 100 ,
+                           E=5    , I1= 1    , I2= 0 , I3= 0   , I4= 0,
+                           R=1    , D = 1)
   
-  
-  
+tiempo.red <- seq(0,10, by= 0.05)
+
+# out.ref <- ode(condiciones.ref, tiempo.red, Ebola, parametros.ref)
   
