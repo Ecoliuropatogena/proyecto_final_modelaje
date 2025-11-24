@@ -62,7 +62,10 @@ y <- 1/12.7
 
 # Tasa de transmision:
   # promedio de lo reportado para los 3 paises afectados para nuestra tasa
-  beta.base <- (0.27+0.45+0.28)/3
+  beta.base <- (0.27+0.45+0.28)/3 #(Althaus, 2014)
+  # Althaus, C. L. (2014). 
+  # Estimating the Reproduction Number of Ebola Virus (EBOV) During the 2014 Outbreak in West Africa. PLoS Currents, 6. 
+  # https://doi.org/10.1371/currents.outbreaks.91afb5e0f279e7f29e7056095255b288
 
 # como esta es de doctores estos se lavan las manos y tocan el cadaver
 b2d <- beta.base * 2.25 * 2.1
@@ -108,7 +111,12 @@ m <- 0.2
 o <- 0.3
 
 # Tasa de natalidad humanos:
-n <- 
+# basado en esta pagina:https://datosmacro.expansion.com/demografia/natalidad?anio=2013
+# Tasa de natalidad guinea 2013: 38.38%
+# Sierra leona: 36.60%
+# Liberia 36.23%
+ nat <- (38.38/1000)+(36.60/1000)+ (36.23/1000) 
+n <- nat/3
 
 parametros.ref <- c(y,b2d, b1d, k1, k2, k3, a1 ,a2 ,a3, a4, s1, s2, s3,
                     s, l, m, o, n)
