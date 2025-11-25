@@ -78,6 +78,9 @@ return(list(c(dSm, dLm, dS1, dS2, dE, dI1, dI2, dI3, dI4, dR, dD)))
 
 # De latencia a infectado 1 en dias
 y <- 1/12.7
+            # tardas 12 días en pasar de latente a infectado
+            # entonces por día la latencia avanza de la siguiente manera
+            # 1/12
 
 # Tasa de transmision:
   # promedio de lo reportado para los 3 paises afectados para nuestra tasa
@@ -86,14 +89,19 @@ beta.base <- (0.27+0.45+0.28)/3 #(Althaus, 2014)
     # Estimating the Reproduction Number of Ebola Virus (EBOV) During the 2014 Outbreak in West Africa. PLoS Currents, 6. 
     # https://doi.org/10.1371/currents.outbreaks.91afb5e0f279e7f29e7056095255b288
 
+
+
 # BETAS DE LA ECUACIÓN DE S1.
-b11 <- 0.3
-b12 <- 0.8
-b13 <- 0.5
-b14 <- 0.5
+b11 <- 0.27
+b12 <- 0.33
+b13 <- 0.39
+b14 <- 0.45
 b1m <- 0.03   # se mantiene, ahora es prob. de transmisión por murciélago cazado
 
 # BETAS DE LA ECUACION S2
+  # Cuidado del paciente al inicio de la enfermedad
+b21 <- beta.base * 6.0
+
 b22 <- 0.8
 b23 <- 0.5
 b24 <- 0.5
@@ -104,16 +112,14 @@ b2d <- beta.base * 2.25 * 2.1
 # De la poblacion general, participan en ritos y en comidas comunitarias
 b1d <- beta.base * 4.22 * 2.84
 
-# Cuidado del paciente al inicio de la enfermedad
-b21 <- beta.base * 6.0
 
 # Cambio de fase en la infeccion  en dias
-k1 <- 1/3
+k1 <- 1/6   
 k2 <- 1/2
 k3 <- 1/1
 
 # Letalidad por periodo de infección:
-  # Se tiene calculado el CFR general del brote que es del 85.6%, esto lo tomamos
+  # Se tiene calculado el CFR general del brote que es del 88%, esto lo tomamos
   # como letalidad, pero al nosotros ampliar los tipos de infectados, de manera arbitraria
   # repartimos ese 0.88 entre las 4 fases siguiendo la coherencia de la infeccion
 a1 <- 0.05
@@ -125,21 +131,22 @@ a4 <- 0.38
   # Siguiendo la logica, la tasa de recuperación debe de ser mayor en s1 que en s4
   # Se calculo en base a los pacientes que fueron hospitalizados desde incios de sintomas
   # y los que tardaron más en ser atendidos
-s1 <- 1/9.2
-s2 <- 1/ 10.5
-s3 <- 1/ 13.2
-s4 <- 1/15.6
+
+s1 <- 1/ 9.2    # Por día avanzas aprox 1/9 en el proceso de recuperación 
+s2 <- 1/ 10.5   # Por día avanzas 1/10 de la infección
+s3 <- 1/ 13.2   
+s4 <- 1/ 15.6
 
 # murcielago
 # Estos si son arbitrarios:
   # Tasa natalidad murcielagos
-s <- 0.2
+s <- 1/360
   # Conversión a reservorio
-l <- 0.4
+l <- 1/75
   # Mortalidad murcielagos
-e <- 0.2
+e <- 1/1960
   # Tasa de caza de murcielagos:
-o <- 0.3
+o <- 1/1000
   # número promedio de humanos expuestos por murciélago infectado cazado
 c_m = 3  
 
@@ -165,58 +172,80 @@ parametros.ref <- c(y,
                     k1, k2, k3, 
                     a1 ,a2 ,a3, a4, 
                     s1, s2, s3, s4,
-                    s, l, e, o, cm,
+                    s, l, e, o, c_m,
                     n, u, ent)
+
+
+
+#========================= versión en limpio ==========
+
+beta.base <- (0.27 + 0.45 + 0.28) / 3 
+
+# Vector de parámetros consolidado
+parametros.ref <- c(
+  # --- Dinámica de Murciélagos ---
+  s = 1/360,    # Tasa natalidad murciélagos
+  e = 1/1960,   # Mortalidad natural murciélagos (Vida larga)
+  l = 1/75,     # Tasa de conversión a reservorio (Susceptible -> Infectado)
+  o = 1/1000,   # Tasa de caza de murciélagos
+  c_m = 3,      # Número promedio de humanos expuestos por murciélago cazado
+  
+  # --- Demografía Humana ---
+  # Tasa de natalidad promedio (Guinea, Sierra Leona, Liberia 2013)
+  n = ((38.38/1000) + (36.60/1000) + (36.23/1000)) / 3,
+  u = 0.02,     # Tasa de mortalidad general humana
+  
+  # --- Betas (Tasas de Transmisión) ---
+  # Ecuación S1 (Población general)
+  b11 = 0.27, b12 = 0.33, b13 = 0.39, b14 = 0.45, 
+  b1m = 0.03,   # Prob. de transmisión por contacto con murciélago
+  b1d = beta.base * 4.22 * 2.84, # Transmisión en ritos/comidas comunitarias
+  
+  # Ecuación S2 (Personal de salud/Hospital)
+  b21 = beta.base * 6.0, # Cuidado inicial del paciente
+  b22 = 0.8, b23 = 0.5, b24 = 0.5,
+  b2d = beta.base * 2.25 * 2.1, # Doctores tocando cadáveres/lavado
+  
+  # --- Progresión de la Enfermedad ---
+  y = 1/12.7,   # Tasa de latencia a infectado (1/días)
+  
+  # Fases de Infección (k=cambio fase, a=letalidad, s=recuperación)
+  # Fase 1
+  k1 = 1/6, a1 = 0.05, s1 = 1/9.2,
+  # Fase 2
+  k2 = 1/2, a2 = 0.15, s2 = 1/10.5,
+  # Fase 3
+  k3 = 1/1, a3 = 0.30, s3 = 1/13.2,
+  # Fase 4 (Solo letalidad y recuperación, no hay cambio k4)
+  a4 = 0.38, s4 = 1/15.6,
+  
+  # --- Tasa de Entierro ---
+  ent = 0.5     # Tasa de entierro seguro (aprox 2 días)
+)
+
+
+
+
+
 #-------------------------------------------------------------------------------
-tiempo.red <- seq(0,10, by= 0.05)
+tiempo.red <- seq(0,10, by= 1)
 
 # ======== Condiciones iniciales =========== #
 
-condiciones_iniciales <- c(Sm=500 , Lm=300   , S1=500, S2= 100 ,
-                           E=5    , I1= 1    , I2= 0 , I3= 0   , I4= 0,
-                           R=1    , D = 1)
+condiciones_iniciales <- c(Sm=1000 , Lm=30   , S1=2700, S2= 300 ,
+                           E=50    , I1= 10    , I2= 0 , I3= 0   , I4= 0,
+                           R=10    , D = 1)
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 # Graficas:
 out.ref <- ode(condiciones_iniciales, tiempo.red, Ebola, parametros.ref)
-matplot(out.ref[, 1], out.ref[, 2:11], type = "l", xlab = "tiempo", ylab = "población",
+matplot(out.ref[, 1], out.ref[, 2:12], type = "l", xlab = "tiempo", ylab = "población",
         main = "SEIR Ébola", lwd = 2)
 legend("topright", legend = c("Suceptibles m", "Reservorio m", "Suceptibles 1", "Suceptibles 2", "Expuestos",
                               "Infectados 1", "Infectados 2", "Infectados 3", "Infectados 4", "Recuperados", "Defunciones"),
-       col = 1:5, lty = 1, cex = 0.8)
+       col = 1:5, lty = 1, cex = 1)
 
-# --------------- 1) PUNTO DE EQUILIBRIO ---------------
-
-eq <- runsteady(
-  y = condiciones_iniciales,
-  time = c(0, 1000), # Aumenté el tiempo para asegurar convergencia
-  func = Ebola,
-  parms = pars
-)
-
-print("--- Nuevo Punto de Equilibrio ---")
-print(eq$y)
-
-# --------------- 2) JACOBIANO EN EL EQUILIBRIO ---------------
-J <- jacobian.full(
-  y = eq$y,
-  func = Ebola,
-  parms = pars
-)
-
-# --------------- 3) ESTABILIDAD ---------------
-print("--- Eigenvalores (Estabilidad) ---")
-vals <- eigen(J)$values
-print(vals)
-
-max_real <- max(Re(vals))
-
-if(max_real < 0) {
-  print(paste("RESULTADO: El sistema ahora es ESTABLE. Max Eigenvalor:", max_real))
-} else {
-  print(paste("RESULTADO: El sistema sigue INESTABLE. Max Eigenvalor:", max_real))
-}
 
 
 #--------------------------------------------------------------------------------

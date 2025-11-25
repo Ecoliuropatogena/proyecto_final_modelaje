@@ -86,7 +86,3 @@ if(max_real < 0) {
 
 
 
-# ============= Calculo de R0 y Rt ======================== #
-
-# No vale la pena, ni la IA pudo........
-
