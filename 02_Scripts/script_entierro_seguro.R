@@ -11,12 +11,12 @@ Ebola <- function(time, state, parameters) {
     
     #humanos                                                       
     #NOTA: En esta beta va incluido lo del omega.
-    dS1 <- -b11*S1*I1 - b12*S1*I2 - b13*S1*I3 - b14*S1*I4 - b1d*S1*D + n - u*S1 - b1m*S1*Lm * o 
+    dS1 <- -b11*S1*I1 - b12*S1*I2 - b13*S1*I3 - b14*S1*I4 - b1d*S1*D + n - u*S1 - b1m*S1*Lm*o 
     dS2 <- -b21*S2*I1 - b22*S2*I2 - b23*S2*I3 - b24*S2*I4 - b2d*S2*D + n - u*S2
     
     #expuestos
     dE  <-  b11*S1*I1 + b12*S1*I2 + b13*S1*I3 + b14*S1*I4 + b1d*S1*D +
-      b21*S2*I1 + b22*S2*I2 + b23*S2*I3 + b24*S2*I4 + b2d*S2*D + b1m*S1*Lm - u*E - y*E
+      b21*S2*I1 + b22*S2*I2 + b23*S2*I3 + b24*S2*I4 + b2d*S2*D + b1m*S1*Lm*o - u*E - y*E
     
     #infectaos, recuperados y defunciones
     dI1 <-    y*E - k1*I1 - a1*I1 - s1*I1
