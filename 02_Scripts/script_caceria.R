@@ -302,8 +302,40 @@ salida_total <- parametros.ref$k1 + parametros.ref$k2 + parametros.ref$k3 + para
 # 3. Corrección por entierro seguro
 ajuste_entierro <- 1 - parametros.ref$ent
 
+
 # 4. Cálculo final del R0
 R0 <- beta_total / salida_total * ajuste_entierro
 
 # Mostrar resultado
 R0
+
+#-------------------------------------------------------------------------------
+# r0 modificado
+
+# Convertir los parámetros a lista para usar pars$parametro
+parametros.ref <- as.list(parametros.ref)
+
+# ------------------------------
+# Cálculo del R0 paso a paso
+
+# # 1. Fuerza total de infección (todos los b1x y b2x)
+# beta_total.1 <- parametros.ref$b11 + parametros.ref$b12 + parametros.ref$b13 + parametros.ref$b14 +
+#   parametros.ref$b21 + parametros.ref$b22 + parametros.ref$b23 + parametros.ref$b24
+# 
+# # 2. Tasa total de salida de los infectados (recuperación + muerte)
+# salida_total.1 <- parametros.ref$k1 + parametros.ref$k2 + parametros.ref$k3 + parametros.ref$a4
+# 
+# # 3. Corrección por entierro seguro
+# ajuste_entierro.1 <- 1 - parametros.ref$ent
+# 
+# 
+# # 4. Cálculo final del R0
+# R0_1 <- beta_total.1 / salida_total.1 * ajuste_entierro.1
+# 
+# # Mostrar resultado
+# R0_1
+# 
+# 
+# 
+# # 5. Tasa de expuesto a infectado
+# sigma <- parametros.ref
